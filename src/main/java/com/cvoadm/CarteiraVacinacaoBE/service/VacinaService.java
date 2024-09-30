@@ -2,10 +2,9 @@ package com.cvoadm.CarteiraVacinacaoBE.service;
 
 import com.cvoadm.CarteiraVacinacaoBE.model.Vacinas;
 import com.cvoadm.CarteiraVacinacaoBE.repository.VacinasRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,37 +12,64 @@ import java.util.Optional;
 public class VacinaService {
 
     @Autowired
-    private VacinasRepository vacinaRepository;
+    private VacinasRepository vacinasRepository;
 
-    // Buscar todas as vacinas
-    public List<Vacinas> listarTodas() {
-        return vacinaRepository.findAll();
+    // Método para buscar todas as vacinas
+    public List<Vacinas> findAll() {
+        return vacinasRepository.findAll();
     }
 
-    // Buscar vacina por ID
-    public Optional<Vacinas> buscarPorId(Long id) {
-        return vacinaRepository.findById(id);
+    // Método para buscar vacina por ID
+    public Optional<Vacinas> findById(Long id) {
+        return vacinasRepository.findById(id);
     }
 
-    // Salvar uma nova vacina
-    public Vacinas salvar(Vacinas vacina) {
-        return vacinaRepository.save(vacina);
+    // Método para criar uma nova vacina
+    @Transactional
+    public Vacinas createVacina(Vacinas vacina) throws Exception {
+        validateVacina(vacina); // Valida os dados da vacina antes de criar
+        return vacinasRepository.save(vacina);
     }
 
-    // Atualizar uma vacina existente
-    public Vacinas atualizar(Long id, Vacinas vacinaAtualizada) {
-        return vacinaRepository.findById(id)
-                .map(vacinas -> {
-                    vacinas.setNomeVacina(vacinaAtualizada.getNomeVacina());
-                    vacinas.setLote(vacinaAtualizada.getLote());
-                    vacinas.setVacStatus(vacinaAtualizada.getVacStatus());
-                    return vacinaRepository.save(vacinas);
-                }).orElseThrow(() -> new EntityNotFoundException("Vacina não encontrada"));
+    // Método para atualizar uma vacina existente
+    @Transactional
+    public Vacinas updateVacina(Long id, Vacinas vacinaAtualizada) throws Exception {
+        Optional<Vacinas> vacinaExistente = vacinasRepository.findById(id);
+        if (vacinaExistente.isPresent()) {
+            Vacinas vacina = vacinaExistente.get();
+            // Atualizando os dados
+            vacina.setNomeVacina(vacinaAtualizada.getNomeVacina());
+            vacina.setLote(vacinaAtualizada.getLote());
+            vacina.setVacStatus(vacinaAtualizada.getVacStatus());
+
+            validateVacina(vacina); // Valida os dados da vacina antes de atualizar
+            return vacinasRepository.save(vacina); // Salva a vacina atualizada
+        } else {
+            throw new Exception("Vacina com o ID " + id + " não encontrada.");
+        }
     }
 
-    // Deletar uma vacina
-    public void deletar(Long id) {
-        vacinaRepository.deleteById(id);
+    // Método para deletar uma vacina
+    @Transactional
+    public void deleteVacina(Long id) throws Exception {
+        Optional<Vacinas> vacinaExistente = vacinasRepository.findById(id);
+        if (vacinaExistente.isPresent()) {
+            vacinasRepository.delete(vacinaExistente.get());
+        } else {
+            throw new Exception("Vacina com o ID " + id + " não encontrada.");
+        }
+    }
+
+    // Validação dos dados da vacina
+    private void validateVacina(Vacinas vacina) throws Exception {
+        if (vacina.getNomeVacina() == null || vacina.getNomeVacina().isEmpty()) {
+            throw new Exception("O nome da vacina é obrigatório.");
+        }
+        if (vacina.getLote() == null || vacina.getLote().isEmpty()) {
+            throw new Exception("O lote da vacina é obrigatório.");
+        }
+        if (vacina.getVacStatus() == null || vacina.getVacStatus().isEmpty()) {
+            throw new Exception("O status da vacina é obrigatório (ATIVO/INATIVO).");
+        }
     }
 }
-

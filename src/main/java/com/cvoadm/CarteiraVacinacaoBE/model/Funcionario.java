@@ -12,7 +12,6 @@ public class Funcionario {
     private String nome;
     private String email;
     private String senha;
-    private Boolean isAdmin;
 
     public Integer getId() {
         return id;
@@ -44,13 +43,5 @@ public class Funcionario {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
     }
 }

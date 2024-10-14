@@ -10,22 +10,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
-@CrossOrigin(origins = "http://localhost:5173")
 public class PacienteController {
 
     @Autowired
     private PacienteService pacienteService;
 
-    // Endpoint para listar todos os pacientes
     @GetMapping
-    public List<Paciente> getAllPacientes() {
-        return pacienteService.getAllPacientes();
+    public ResponseEntity<List<Paciente>> getAllPacientes() {
+        List<Paciente> pacientes = pacienteService.findAll();
+        return ResponseEntity.ok(pacientes);
     }
 
-    // Endpoint para consultar um paciente por ID
     @GetMapping("/{id}")
     public ResponseEntity<Paciente> getPacienteById(@PathVariable Integer id) {
-        Paciente paciente = pacienteService.getPacienteById(id);
+        Paciente paciente = pacienteService.findById(id);
         if (paciente != null) {
             return ResponseEntity.ok(paciente);
         } else {
@@ -33,21 +31,32 @@ public class PacienteController {
         }
     }
 
-    // Endpoint para adicionar um novo paciente
     @PostMapping
-    public Paciente createPaciente(@RequestBody Paciente paciente) {
-        return pacienteService.savePaciente(paciente);
+    public ResponseEntity<Paciente> createPaciente(@RequestBody Paciente paciente) {
+        Paciente newPaciente = pacienteService.save(paciente);
+        return ResponseEntity.ok(newPaciente);
     }
 
-    // Endpoint para deletar um paciente
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePaciente(@PathVariable Integer id) {
-        Paciente paciente = pacienteService.getPacienteById(id);
-        if (paciente != null) {
-            pacienteService.deletePaciente(id);
-            return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<Paciente> updatePaciente(@PathVariable Integer id, @RequestBody Paciente paciente) {
+        Paciente updatedPaciente = pacienteService.findById(id);
+        if (updatedPaciente != null) {
+            updatedPaciente.setNome(paciente.getNome());
+            updatedPaciente.setTelefone(paciente.getTelefone());
+            updatedPaciente.setGenero(paciente.getGenero());
+            updatedPaciente.setDataNasc(paciente.getDataNasc());
+            updatedPaciente.setEndereco(paciente.getEndereco());
+            updatedPaciente.setCpf(paciente.getCpf());
+            Paciente savedPaciente = pacienteService.save(updatedPaciente);
+            return ResponseEntity.ok(savedPaciente);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePaciente(@PathVariable Integer id) {
+        pacienteService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

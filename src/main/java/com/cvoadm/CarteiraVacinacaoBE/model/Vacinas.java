@@ -3,23 +3,20 @@ package com.cvoadm.CarteiraVacinacaoBE.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "vacinas")
+@Table(name = "Vacinas")
 public class Vacinas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "lote") // Verifique se o nome da coluna está correto
     private String lote;
 
-    @Column(name = "nomeVacina") // Certifique-se de que o nome está correto
     private String nomeVacina;
 
-    @Column(name = "vacStatus") // Verifique se o nome da coluna está correto
     private String vacStatus;
 
-    // Getters e setters
+    // Getters e Setters
     public Long getId() {
         return id;
     }

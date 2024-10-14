@@ -9,23 +9,32 @@ import java.util.List;
 
 @Service
 public class PacienteService {
+
     @Autowired
     private PacienteRepository pacienteRepository;
 
-    public List<Paciente> getAllPacientes() {
+    public List<Paciente> findAll() {
         return pacienteRepository.findAll();
     }
 
-    public Paciente getPacienteById(Integer id) {
+    public Paciente findById(Integer id) {
         return pacienteRepository.findById(id).orElse(null);
     }
 
-    public Paciente savePaciente(Paciente paciente) {
+    public Paciente save(Paciente paciente) {
         return pacienteRepository.save(paciente);
     }
 
-    public void deletePaciente(Integer id) {
+    public void delete(Integer id) {
         pacienteRepository.deleteById(id);
+    }
+
+    public List<Paciente> findByNome(String nome) {
+        return pacienteRepository.findByNome(nome);
+    }
+
+    public List<Paciente> findByTelefone(String telefone) {
+        return pacienteRepository.findByTelefone(telefone);
     }
 }
 

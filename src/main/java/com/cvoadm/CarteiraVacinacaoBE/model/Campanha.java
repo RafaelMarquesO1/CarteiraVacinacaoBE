@@ -15,7 +15,7 @@ public class Campanha {
     @Column(nullable = false, length = 100)
     private String nomeCampanha;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 500)
     private String descricao;
 
     @Column(nullable = false)
@@ -23,13 +23,6 @@ public class Campanha {
 
     @Column(nullable = false)
     private LocalDate dataFim;
-
-    public Campanha(String nomeCampanha, String descricao, LocalDate dataInicio, LocalDate dataFim, String imagePath) {
-    }
-
-    public Campanha() {
-
-    }
 
     // Getters e Setters
     public Long getId() {

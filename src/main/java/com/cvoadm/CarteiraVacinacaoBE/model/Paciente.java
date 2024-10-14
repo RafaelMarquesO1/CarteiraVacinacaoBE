@@ -13,13 +13,18 @@ public class Paciente {
     private Integer id;
 
     private String nome;
+
     private String telefone;
+
     private String genero;
-    private java.sql.Date dataNasc;
+
+    private Date dataNasc;
+
     private String endereco;
+
     private String cpf;
 
-
+    // Getters e Setters
     public Integer getId() {
         return id;
     }

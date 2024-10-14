@@ -16,31 +16,27 @@ public class FuncionarioService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
-    // Listar todos os funcionários
-    public List<Funcionario> listarTodos() {
+    public List<Funcionario> findAll() {
         return funcionarioRepository.findAll();
     }
 
-    // Buscar um funcionário por ID
-    public Optional<Funcionario> buscarPorId(Integer id) {
-        return funcionarioRepository.findById(id);
+    public Funcionario findById(Integer id) {
+        return funcionarioRepository.findById(id).orElse(null);
     }
 
-    // Criar ou atualizar um funcionário
-    public Funcionario salvar(Funcionario funcionario) {
+    public Funcionario save(Funcionario funcionario) {
         return funcionarioRepository.save(funcionario);
     }
 
-    // Deletar um funcionário por ID
-    public void deletarPorId(Integer id) {
+    public void delete(Integer id) {
         funcionarioRepository.deleteById(id);
     }
 
-    private JdbcTemplate jdbcTemplate;
+    public List<Funcionario> findByNome(String nome) {
+        return funcionarioRepository.findByNome(nome);
+    }
 
-    @Transactional
-    public void resetarContagemId() {
-        String sql = "DBCC CHECKIDENT ('Funcionario', RESEED, 0)";
-        jdbcTemplate.execute(sql);
+    public List<Funcionario> findByEmail(String email) {
+        return funcionarioRepository.findByEmail(email);
     }
 }

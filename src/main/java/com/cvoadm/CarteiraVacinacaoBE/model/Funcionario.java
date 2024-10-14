@@ -5,14 +5,18 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Funcionario")
 public class Funcionario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String nome;
+
     private String email;
+
     private String senha;
 
+    // Getters e Setters
     public Integer getId() {
         return id;
     }

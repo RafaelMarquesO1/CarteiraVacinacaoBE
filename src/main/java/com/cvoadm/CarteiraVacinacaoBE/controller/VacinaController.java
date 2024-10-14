@@ -3,65 +3,57 @@ package com.cvoadm.CarteiraVacinacaoBE.controller;
 import com.cvoadm.CarteiraVacinacaoBE.model.Vacinas;
 import com.cvoadm.CarteiraVacinacaoBE.service.VacinaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/vacinas")
+@RequestMapping("/api/vacinas")
 public class VacinaController {
 
     @Autowired
-    private VacinaService vacinasService;
+    private VacinaService vacinaService;
 
-    // Endpoint para buscar todas as vacinas
     @GetMapping
     public ResponseEntity<List<Vacinas>> getAllVacinas() {
-        List<Vacinas> vacinas = vacinasService.findAll();
-        return new ResponseEntity<>(vacinas, HttpStatus.OK);
+        List<Vacinas> vacinas = vacinaService.findAll();
+        return ResponseEntity.ok(vacinas);
     }
 
-    // Endpoint para buscar vacina por ID
     @GetMapping("/{id}")
     public ResponseEntity<Vacinas> getVacinaById(@PathVariable Long id) {
-        Optional<Vacinas> vacina = vacinasService.findById(id);
-        return vacina.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        Vacinas vacina = vacinaService.findById(id);
+        if (vacina != null) {
+            return ResponseEntity.ok(vacina);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Endpoint para criar uma nova vacina
     @PostMapping
     public ResponseEntity<Vacinas> createVacina(@RequestBody Vacinas vacina) {
-        try {
-            Vacinas novaVacina = vacinasService.createVacina(vacina);
-            return new ResponseEntity<>(novaVacina, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        Vacinas newVacina = vacinaService.save(vacina);
+        return ResponseEntity.ok(newVacina);
     }
 
-    // Endpoint para atualizar uma vacina existente
     @PutMapping("/{id}")
     public ResponseEntity<Vacinas> updateVacina(@PathVariable Long id, @RequestBody Vacinas vacina) {
-        try {
-            Vacinas vacinaAtualizada = vacinasService.updateVacina(id, vacina);
-            return ResponseEntity.ok(vacinaAtualizada);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        Vacinas updatedVacina = vacinaService.findById(id);
+        if (updatedVacina != null) {
+            updatedVacina.setLote(vacina.getLote());
+            updatedVacina.setNomeVacina(vacina.getNomeVacina());
+            updatedVacina.setVacStatus(vacina.getVacStatus());
+            Vacinas savedVacina = vacinaService.save(updatedVacina);
+            return ResponseEntity.ok(savedVacina);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
-    // Endpoint para deletar uma vacina
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVacina(@PathVariable Long id) {
-        try {
-            vacinasService.deleteVacina(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        vacinaService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -10,17 +10,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/funcionarios")
+@CrossOrigin(origins = "http://localhost:5173")
 public class FuncionarioController {
 
     @Autowired
     private FuncionarioService funcionarioService;
 
+    // Listar todos os funcionários
     @GetMapping
     public ResponseEntity<List<Funcionario>> getAllFuncionarios() {
         List<Funcionario> funcionarios = funcionarioService.findAll();
         return ResponseEntity.ok(funcionarios);
     }
 
+    // Obter funcionário por ID
     @GetMapping("/{id}")
     public ResponseEntity<Funcionario> getFuncionarioById(@PathVariable Integer id) {
         Funcionario funcionario = funcionarioService.findById(id);
@@ -31,12 +34,14 @@ public class FuncionarioController {
         }
     }
 
+    // Criar novo funcionário
     @PostMapping
     public ResponseEntity<Funcionario> createFuncionario(@RequestBody Funcionario funcionario) {
         Funcionario newFuncionario = funcionarioService.save(funcionario);
         return ResponseEntity.ok(newFuncionario);
     }
 
+    // Atualizar funcionário existente
     @PutMapping("/{id}")
     public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Integer id, @RequestBody Funcionario funcionario) {
         Funcionario updatedFuncionario = funcionarioService.findById(id);
@@ -51,6 +56,7 @@ public class FuncionarioController {
         }
     }
 
+    // Deletar funcionário
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFuncionario(@PathVariable Integer id) {
         funcionarioService.delete(id);

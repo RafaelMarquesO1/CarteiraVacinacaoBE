@@ -2,9 +2,7 @@ package com.cvoadm.CarteiraVacinacaoBE.service;
 
 import com.cvoadm.CarteiraVacinacaoBE.model.Funcionario;
 import com.cvoadm.CarteiraVacinacaoBE.repository.FuncionarioRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +23,7 @@ public class FuncionarioService {
     }
 
     public Funcionario save(Funcionario funcionario) {
+        // Remove a criptografia da senha, salvando a senha em texto claro
         return funcionarioRepository.save(funcionario);
     }
 
@@ -36,7 +35,7 @@ public class FuncionarioService {
         return funcionarioRepository.findByNome(nome);
     }
 
-    public List<Funcionario> findByEmail(String email) {
+    public Optional<Funcionario> findByEmail(String email) {
         return funcionarioRepository.findByEmail(email);
     }
 }
